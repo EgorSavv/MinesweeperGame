@@ -6,24 +6,56 @@ from settings import CELL_SIZE, ROWS, COLS
 from board import Board
 from assets import cell_textures
 
-
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 board = Board(ROWS, COLS)
 
-play = True
-while play:
+def end_game():
+    print("Game Over!")
+
+def handle_events():
+    global play
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             play = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+            col = mouse_x // (CELL_SIZE + 1)
+            row = mouse_y // (CELL_SIZE + 1)
 
+            # cell = board.cells[row][col]
+
+            if event.button == 1:
+                good_click = board.left_click(row, col)
+                if not good_click:
+                    play = False
+                    end_game()
+            elif event.button == 3:
+                board.right_click(row, col)
+
+def draw_board():
     for row in board.cells:
         for cell in row:
             x = cell.col * (CELL_SIZE + 1)
             y = cell.row * (CELL_SIZE + 1)
-            texture = cell_textures[cell.texture_id]
-            window.blit(texture, (x, y))
+
+            if cell.is_open:
+                pygame.draw.rect(window, (100, 100, 100), (x, y, CELL_SIZE, CELL_SIZE))
+            else:
+                texture = cell_textures[cell.texture_id]
+                window.blit(texture, (x, y))
+
+play = True
+while play:
+
+    handle_events()
+
+    if not play:
+        break
+
+    draw_board()
 
     pygame.display.update()
     clock.tick(FPS)

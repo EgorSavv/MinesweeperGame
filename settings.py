@@ -1,0 +1,8 @@
+WIDTH = 1000
+HEIGHT = 800
+FPS = 60
+
+ROWS = 9
+COLS = 9
+
+CELL_SIZE = 50

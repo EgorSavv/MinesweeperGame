@@ -1,17 +1,24 @@
 import pygame
 from settings import CELL_SIZE
 
-# текстуры клетки
-cell_texture1 = pygame.image.load("assets/cell_texture1.png")
-cell_texture1 = pygame.transform.scale(
-    cell_texture1,
-    (CELL_SIZE, CELL_SIZE)
-)
+spritesheet = pygame.image.load("assets/sprites.png").convert_alpha()
 
-cell_texture2 = pygame.image.load("assets/cell_texture2.png")
-cell_texture2 = pygame.transform.scale(
-    cell_texture2,
-    (CELL_SIZE, CELL_SIZE)
-)
+cell_textures = [
+    spritesheet.subsurface((19 + 96 * 4, 21 + 96 * 2, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 5, 21 + 96 * 1, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 6, 21 + 96 * 1, CELL_SIZE, CELL_SIZE)),
+]
 
-cell_textures = [cell_texture1, cell_texture2]
+sign_texture = spritesheet.subsurface((19 + 96 * 5, 21 + 96 * 2, CELL_SIZE, CELL_SIZE))
+
+numbers_textures = [
+    spritesheet.subsurface((19 + 96 * 5, 21 + 96 * 0, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 2, 21 + 96 * 6, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 3, 21 + 96 * 6, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 4, 21 + 96 * 6, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 3, 21 + 96 * 7, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 4, 21 + 96 * 7, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 2, 21 + 96 * 8, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 3, 21 + 96 * 8, CELL_SIZE, CELL_SIZE)),
+    spritesheet.subsurface((19 + 96 * 4, 21 + 96 * 8, CELL_SIZE, CELL_SIZE))
+]

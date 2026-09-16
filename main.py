@@ -4,9 +4,10 @@ pygame.init()
 from settings import WIDTH, HEIGHT, FPS
 from settings import CELL_SIZE, ROWS, COLS
 from board import Board
-from assets import cell_textures
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
+from assets import cell_textures, numbers_textures, sign_texture
+
 clock = pygame.time.Clock()
 
 board = Board(ROWS, COLS)
@@ -42,10 +43,13 @@ def draw_board():
             y = cell.row * (CELL_SIZE + 1)
 
             if cell.is_open:
-                pygame.draw.rect(window, (100, 100, 100), (x, y, CELL_SIZE, CELL_SIZE))
+                texture = numbers_textures[cell.mine_count]
+            elif cell.has_sign:
+                texture = sign_texture
             else:
                 texture = cell_textures[cell.texture_id]
-                window.blit(texture, (x, y))
+
+            window.blit(texture, (x, y))
 
 play = True
 while play:

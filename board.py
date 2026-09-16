@@ -42,19 +42,32 @@ class Board:
             cell = self.cells[row][col]
             cell.has_mine = True
 
+    def calc_mine_count(self, row, col):
+        count = 0
+
+        for cur_row, cur_col in self.unopened_cells:
+            if abs(cur_row - row) <= 1 and abs(cur_col - col) <= 1:
+                cell = self.cells[row][col]
+                count += cell.has_mine
+
+        return count
+
     def left_click(self, row, col):
         cell = self.cells[row][col]
 
         if cell.is_open:
             return
 
-        if self.has_sign:
+        if cell.has_sign:
             return
 
-        if self.has_mine:
+        if cell.has_mine:
             return False
-        else:
-            cell.open()
+        
+        cell.mine_count = self.calc_mine_count(row, col)
+        cell.open()
+
+        return True
 
     def right_click(self, row, col):
         cell = self.cells[row][col]

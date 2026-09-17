@@ -17,6 +17,7 @@ def end_game():
 
 def handle_events():
     global play
+    global first_left_click
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -29,6 +30,9 @@ def handle_events():
             # cell = board.cells[row][col]
 
             if event.button == 1:
+                if first_left_click:
+                    first_left_click = False
+                    board.place_mines((row, col))
                 good_click = board.left_click(row, col)
                 if not good_click:
                     play = False
@@ -37,6 +41,8 @@ def handle_events():
                 board.right_click(row, col)
 
 def draw_board():
+    global font
+
     for row in board.cells:
         for cell in row:
             x = cell.col * (CELL_SIZE + 1)
@@ -51,9 +57,17 @@ def draw_board():
 
             window.blit(texture, (x, y))
 
+    text = font.render(f"Мины: {board.remaining_mines}", True, (255, 255, 255))
+    window.blit(text, (850, 10))
+
 play = True
+first_left_click = True
+font = pygame.font.Font(None, 50)
+
 while play:
 
+    window.fill((0, 0, 0))
+    
     handle_events()
 
     if not play:

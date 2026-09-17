@@ -8,6 +8,7 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.remaining_mines = MINE_COUNT
+        self.count_open = 0
         self.cells = []
         self.unused_cells = self.get_all_cells()
         self.mine_positions = []
@@ -75,6 +76,7 @@ class Board:
             cell = self.cells[cur_row][cur_col]
             cell.mine_count = self.calc_mine_count(cur_row, cur_col)
             cell.open()
+            self.count_open += 1
 
             if cell.mine_count == 0:
                 needs_to_be_removed = []

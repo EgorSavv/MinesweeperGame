@@ -2,7 +2,7 @@ import pygame
 pygame.init()
 
 from settings import WIDTH, HEIGHT, FPS
-from settings import CELL_SIZE, ROWS, COLS
+from settings import CELL_SIZE, ROWS, COLS, MINE_COUNT
 from board import Board
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -12,23 +12,21 @@ clock = pygame.time.Clock()
 
 board = Board(ROWS, COLS)
 
-def loose_game():
-    global play
-    global loose_pos
-    x, y = loose_pos
-    play = False
-    window.blit(boom_texture, (x - 300, y - 300))
+def draw_game_over():
+    row, col = loose_cell
+
+    x = col * (CELL_SIZE + 1)
+    y = row * (CELL_SIZE + 1)
+    window.blit(boom_texture, (x - 270, y - 270))
     print("Game Over!")
 
-def win_game():
-    global play
-    play = False
+def draw_win():
     print("Win!")
 
 def handle_events():
     global play
-    global is_loose
-    global loose_pos
+    global game_state
+    global loose_cell
     global first_left_click
 
     for event in pygame.event.get():
@@ -45,14 +43,14 @@ def handle_events():
                     board.place_mines((row, col))
                 good_click = board.left_click(row, col)
                 if not good_click:
-                    is_loose = True
-                    loose_pos = (mouse_x, mouse_y)
+                    game_state = "game_over"
+                    loose_cell = (row, col)
+                elif board.count_open == ROWS * COLS - MINE_COUNT:
+                    game_state = "win"
             elif event.button == 3:
                 board.right_click(row, col)
 
 def draw_board():
-    global font
-
     for row in board.cells:
         for cell in row:
             x = cell.col * (CELL_SIZE + 1)
@@ -70,8 +68,8 @@ def draw_board():
     text = font.render(f"Мины: {board.remaining_mines}", True, (255, 255, 255))
     window.blit(text, (850, 10))
 
-is_loose = False
-loose_pos = (0, 0)
+game_state = "playing"
+loose_cell = (0, 0)
 play = True
 first_left_click = True
 font = pygame.font.Font(None, 50)
@@ -82,12 +80,18 @@ while play:
     
     handle_events()
 
-    draw_board()
+    if game_state == "playing":
+        draw_board()
 
-    if len(board.unused_cells) == board.remaining_mines:
-        win_game()
-    if is_loose:
-        loose_game()
+    elif game_state == "game_over":
+        draw_board()
+        draw_game_over()
+        play = False
+
+    elif game_state == "win":
+        draw_board()
+        draw_win()
+        play = False
 
     pygame.display.update()
     clock.tick(FPS)

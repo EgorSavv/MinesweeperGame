@@ -9,7 +9,7 @@ class Board:
         self.cols = cols
         self.remaining_mines = MINE_COUNT
         self.cells = []
-        self.unopened_cells = self.get_all_cells()
+        self.unused_cells = self.get_all_cells()
         self.mine_positions = []
 
         self.create_cells()
@@ -66,7 +66,7 @@ class Board:
 
     def open_area(self, row, col):
         queue = deque()
-        self.unopened_cells.remove((row, col))
+        self.unused_cells.remove((row, col))
         queue.append((row, col))
 
         while queue:
@@ -79,13 +79,13 @@ class Board:
             if cell.mine_count == 0:
                 needs_to_be_removed = []
 
-                for next_row, next_col in self.unopened_cells:
+                for next_row, next_col in self.unused_cells:
                     if abs(next_row - cur_row) <= 1 and abs(next_col - cur_col) <= 1:
                         needs_to_be_removed.append((next_row, next_col))
                         queue.append((next_row, next_col))
 
                 for rem_row, rem_col in needs_to_be_removed:
-                    self.unopened_cells.remove((rem_row, rem_col))
+                    self.unused_cells.remove((rem_row, rem_col))
 
 
     def left_click(self, row, col):
@@ -109,8 +109,10 @@ class Board:
 
         if cell.has_sign:
             self.remaining_mines += 1
+            self.unused_cells.add((row, col))
         else:
             self.remaining_mines -= 1
+            self.unused_cells.remove((row, col))
 
         cell.change_sign();
     

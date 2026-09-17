@@ -6,17 +6,29 @@ from settings import CELL_SIZE, ROWS, COLS
 from board import Board
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-from assets import cell_textures, numbers_textures, sign_texture
+from assets import cell_textures, numbers_textures, sign_texture, boom_texture
 
 clock = pygame.time.Clock()
 
 board = Board(ROWS, COLS)
 
-def end_game():
+def loose_game():
+    global play
+    global loose_pos
+    x, y = loose_pos
+    play = False
+    window.blit(boom_texture, (x - 300, y - 300))
     print("Game Over!")
+
+def win_game():
+    global play
+    play = False
+    print("Win!")
 
 def handle_events():
     global play
+    global is_loose
+    global loose_pos
     global first_left_click
 
     for event in pygame.event.get():
@@ -27,16 +39,14 @@ def handle_events():
             col = mouse_x // (CELL_SIZE + 1)
             row = mouse_y // (CELL_SIZE + 1)
 
-            # cell = board.cells[row][col]
-
             if event.button == 1:
                 if first_left_click:
                     first_left_click = False
                     board.place_mines((row, col))
                 good_click = board.left_click(row, col)
                 if not good_click:
-                    play = False
-                    end_game()
+                    is_loose = True
+                    loose_pos = (mouse_x, mouse_y)
             elif event.button == 3:
                 board.right_click(row, col)
 
@@ -60,6 +70,8 @@ def draw_board():
     text = font.render(f"Мины: {board.remaining_mines}", True, (255, 255, 255))
     window.blit(text, (850, 10))
 
+is_loose = False
+loose_pos = (0, 0)
 play = True
 first_left_click = True
 font = pygame.font.Font(None, 50)
@@ -70,12 +82,17 @@ while play:
     
     handle_events()
 
-    if not play:
-        break
-
     draw_board()
+
+    if len(board.unused_cells) == board.remaining_mines:
+        win_game()
+    if is_loose:
+        loose_game()
 
     pygame.display.update()
     clock.tick(FPS)
+
+    if not play:
+        pygame.time.delay(1000)
 
 pygame.quit()

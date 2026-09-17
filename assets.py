@@ -22,3 +22,5 @@ numbers_textures = [
     spritesheet.subsurface((19 + 96 * 3, 21 + 96 * 8, CELL_SIZE, CELL_SIZE)),
     spritesheet.subsurface((19 + 96 * 4, 21 + 96 * 8, CELL_SIZE, CELL_SIZE))
 ]
+
+boom_texture = pygame.image.load("assets/boom.png").convert_alpha()

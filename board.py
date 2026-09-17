@@ -41,7 +41,7 @@ class Board:
             current_row = []
 
             for col in range(self.cols):
-                texture_id = random.randrange(3)
+                texture_id = random.randrange(4)
                 cell = Cell(row, col, texture_id)
 
                 current_row.append(cell)
@@ -108,6 +108,9 @@ class Board:
 
     def right_click(self, row, col):
         cell = self.cells[row][col]
+
+        if cell.is_open:
+            return
 
         if cell.has_sign:
             self.remaining_mines += 1
